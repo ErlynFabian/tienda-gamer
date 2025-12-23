@@ -20,6 +20,7 @@ import { Button } from '@/components/ui/button';
 import { Navbar } from '@/components/Navbar';
 import { Footer } from '@/components/Footer';
 import { WhatsAppFloatingButton } from '@/components/WhatsAppButton';
+import { formatPrice } from '@/lib/utils';
 
 const componentCategories = [
   { key: 'cpu', label: 'Procesador', icon: Cpu, required: true },
@@ -66,7 +67,7 @@ export default function Configurator() {
   const generateConfigMessage = () => {
     const configLines = Object.entries(selectedComponents)
       .filter(([_, comp]) => comp)
-      .map(([_, comp]) => `• ${comp!.name} - $${comp!.price}`);
+      .map(([_, comp]) => `• ${comp!.name} - ${formatPrice(comp!.price)}`);
 
     return `Hola, quiero cotizar esta configuración personalizada:
 
@@ -74,9 +75,9 @@ export default function Configurator() {
 
 ${configLines.join('\n')}
 
-💰 *Total: $${totalPrice.toLocaleString()}*
+💰 *Total: ${formatPrice(totalPrice)}*
 
-¿Está disponible? ¿Tienen algún descuento por la configuración completa?`;
+¿Está disponible? ¿Hacen envíos a toda República Dominicana?`;
   };
 
   const currentCategoryIndex = componentCategories.findIndex(c => c.key === activeCategory);
@@ -217,7 +218,7 @@ ${configLines.join('\n')}
                           <span className="font-medium">{component.name}</span>
                         </div>
                         <span className={`text-lg font-bold ${isSelected ? 'text-primary' : 'text-muted-foreground'}`}>
-                          ${component.price}
+                          {formatPrice(component.price)}
                         </span>
                       </button>
                     );
@@ -269,7 +270,7 @@ ${configLines.join('\n')}
                             <span className="text-xs text-muted-foreground">{label}</span>
                           </div>
                           <span className={`text-xs font-medium ${selected ? 'text-primary' : 'text-muted-foreground'}`}>
-                            {selected ? `$${selected.price}` : '—'}
+                            {selected ? formatPrice(selected.price) : '—'}
                           </span>
                         </div>
                         {selected && (
@@ -285,7 +286,7 @@ ${configLines.join('\n')}
                   <div className="flex items-baseline justify-between">
                     <span className="text-sm text-muted-foreground">Total estimado</span>
                     <span className="font-display text-3xl font-bold text-primary">
-                      ${totalPrice.toLocaleString()}
+                      {formatPrice(totalPrice)}
                     </span>
                   </div>
                   {!isComplete && (

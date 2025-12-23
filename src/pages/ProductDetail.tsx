@@ -1,7 +1,6 @@
-import { useParams, Link, useNavigate } from 'react-router-dom';
+import { useParams, Link } from 'react-router-dom';
 import { useState } from 'react';
 import { 
-  ArrowLeft, 
   MessageCircle, 
   Shield, 
   Truck, 
@@ -28,6 +27,7 @@ import { Navbar } from '@/components/Navbar';
 import { Footer } from '@/components/Footer';
 import { WhatsAppFloatingButton } from '@/components/WhatsAppButton';
 import { ProductCard } from '@/components/ProductCard';
+import { formatPrice } from '@/lib/utils';
 
 const specIcons: Record<string, React.ElementType> = {
   processor: Cpu,
@@ -59,7 +59,6 @@ const specLabels: Record<string, string> = {
 
 export default function ProductDetail() {
   const { id } = useParams<{ id: string }>();
-  const navigate = useNavigate();
   const { generateWhatsAppLink } = useStore();
   const [selectedImage, setSelectedImage] = useState(0);
 
@@ -94,15 +93,15 @@ export default function ProductDetail() {
 
 ${product.specs.map(s => `• ${s}`).join('\n')}
 
-💰 Precio: $${product.price.toLocaleString()}
+💰 Precio: ${formatPrice(product.price)}
 
-¿Está disponible? ¿Cuáles son las opciones de pago y envío?`;
+¿Está disponible? ¿Cuáles son las opciones de pago y envío a República Dominicana?`;
 
   const infoMessage = `Hola, me interesa el producto:
 
 🖥️ *${product.name}*
 
-Precio: $${product.price.toLocaleString()}
+Precio: ${formatPrice(product.price)}
 
 Me gustaría más información sobre este producto.`;
 
@@ -185,11 +184,11 @@ Me gustaría más información sobre este producto.`;
                 {/* Price */}
                 <div className="flex items-baseline gap-4 mb-4">
                   <span className="font-display text-4xl font-bold text-primary">
-                    ${product.price.toLocaleString()}
+                    {formatPrice(product.price)}
                   </span>
                   {product.originalPrice && (
                     <span className="text-xl text-muted-foreground line-through">
-                      ${product.originalPrice.toLocaleString()}
+                      {formatPrice(product.originalPrice)}
                     </span>
                   )}
                 </div>
@@ -264,7 +263,7 @@ Me gustaría más información sobre este producto.`;
                 </div>
                 <div className="text-center">
                   <Truck className="h-8 w-8 mx-auto mb-2 text-primary" />
-                  <p className="text-xs text-muted-foreground">Envío gratis</p>
+                  <p className="text-xs text-muted-foreground">Envío en RD</p>
                 </div>
                 <div className="text-center">
                   <Award className="h-8 w-8 mx-auto mb-2 text-primary" />

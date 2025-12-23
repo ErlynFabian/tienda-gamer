@@ -1,4 +1,4 @@
-import { MessageCircle, Mail, MapPin, Phone } from 'lucide-react';
+import { MessageCircle, Mail, MapPin } from 'lucide-react';
 import { useStore } from '@/context/StoreContext';
 
 export function Footer() {
@@ -14,7 +14,7 @@ export function Footer() {
               {config.storeName}
             </h3>
             <p className="mb-6 max-w-md text-muted-foreground">
-              Tu tienda de confianza para PCs y laptops gaming de alto rendimiento. 
+              Tu tienda de confianza para PCs y laptops gaming de alto rendimiento en República Dominicana. 
               Armamos tu setup perfecto y te lo entregamos listo para jugar.
             </p>
             <a
@@ -33,12 +33,12 @@ export function Footer() {
             <h4 className="mb-4 font-display font-bold">Enlaces</h4>
             <ul className="space-y-2 text-muted-foreground">
               <li>
-                <a href="#products" className="hover:text-primary transition-colors">
+                <a href="/productos" className="hover:text-primary transition-colors">
                   Productos
                 </a>
               </li>
               <li>
-                <a href="#configurator" className="hover:text-primary transition-colors">
+                <a href="/arma-tu-pc" className="hover:text-primary transition-colors">
                   Arma tu PC
                 </a>
               </li>
@@ -65,11 +65,11 @@ export function Footer() {
               </li>
               <li className="flex items-center gap-2">
                 <Mail className="h-4 w-4 text-primary" />
-                <span>info@nexusgaming.com</span>
+                <span>info@nexusgaming.do</span>
               </li>
               <li className="flex items-center gap-2">
                 <MapPin className="h-4 w-4 text-primary" />
-                <span>Ciudad de México, MX</span>
+                <span>Santo Domingo, RD</span>
               </li>
             </ul>
           </div>
@@ -79,7 +79,7 @@ export function Footer() {
         <div className="mt-12 border-t border-border pt-6 text-center text-sm text-muted-foreground">
           <p>© {new Date().getFullYear()} {config.storeName}. Todos los derechos reservados.</p>
           <p className="mt-1">
-            Compra segura por WhatsApp • Garantía incluida • Envíos a todo el país
+            Compra segura por WhatsApp • Garantía incluida • Envíos a todo RD
           </p>
         </div>
       </div>
