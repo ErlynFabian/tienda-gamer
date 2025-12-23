@@ -1,9 +1,9 @@
 import { useParams, Link } from 'react-router-dom';
 import { useState } from 'react';
-import { 
-  MessageCircle, 
-  Shield, 
-  Truck, 
+import {
+  MessageCircle,
+  Shield,
+  Truck,
   Award,
   ChevronRight,
   Star,
@@ -108,7 +108,7 @@ Me gustaría más información sobre este producto.`;
   return (
     <div className="min-h-screen bg-background">
       <Navbar />
-      
+
       <main className="pt-20">
         {/* Breadcrumb */}
         <div className="container mx-auto px-4 py-4">
@@ -138,8 +138,8 @@ Me gustaría más información sobre este producto.`;
                     -{discount}%
                   </Badge>
                 )}
-                <img 
-                  src={gallery[selectedImage]} 
+                <img
+                  src={gallery[selectedImage]}
                   alt={product.name}
                   className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
                 />
@@ -152,11 +152,10 @@ Me gustaría más información sobre este producto.`;
                     <button
                       key={index}
                       onClick={() => setSelectedImage(index)}
-                      className={`w-20 h-20 rounded-lg overflow-hidden border-2 transition-all ${
-                        selectedImage === index 
-                          ? 'border-primary shadow-[0_0_15px_hsl(var(--primary)/0.3)]' 
+                      className={`w-20 h-20 rounded-lg overflow-hidden border-2 transition-all ${selectedImage === index
+                          ? 'border-primary shadow-[0_0_15px_hsl(var(--primary)/0.3)]'
                           : 'border-border hover:border-primary/50'
-                      }`}
+                        }`}
                     >
                       <img src={img} alt="" className="w-full h-full object-cover" />
                     </button>
@@ -170,7 +169,7 @@ Me gustaría más información sobre este producto.`;
               {/* Title & price */}
               <div>
                 <h1 className="font-display text-3xl md:text-4xl font-bold mb-4">{product.name}</h1>
-                
+
                 {/* Stars */}
                 <div className="flex items-center gap-2 mb-4">
                   <div className="flex">

@@ -31,12 +31,6 @@ export function Navbar() {
                 {link.label}
               </Link>
             ))}
-            <Link
-              to="/admin"
-              className="text-sm font-medium text-muted-foreground transition-colors hover:text-primary"
-            >
-              Admin
-            </Link>
             <Button asChild variant="whatsapp" size="sm">
               <a
                 href={generateWhatsAppLink('Hola, quiero información sobre sus productos')}
@@ -70,13 +64,6 @@ export function Navbar() {
                   {link.label}
                 </Link>
               ))}
-              <Link
-                to="/admin"
-                onClick={() => setIsOpen(false)}
-                className="text-sm font-medium text-muted-foreground transition-colors hover:text-primary"
-              >
-                Admin
-              </Link>
               <Button asChild variant="whatsapp" className="w-full">
                 <a
                   href={generateWhatsAppLink('Hola, quiero información')}

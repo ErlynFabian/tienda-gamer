@@ -14,6 +14,7 @@ export interface Product {
   category: 'pc' | 'laptop' | 'accessory';
   price: number;
   originalPrice?: number;
+  costPrice?: number;
   image: string;
   specs: string[];
   fullSpecs?: {

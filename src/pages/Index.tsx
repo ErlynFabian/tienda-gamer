@@ -8,6 +8,7 @@ import { Footer } from '@/components/Footer';
 import { WhatsAppFloatingButton } from '@/components/WhatsAppButton';
 import { Button } from '@/components/ui/button';
 import { products } from '@/data/products';
+import { FAQ } from '@/components/FAQ';
 import configuratorBg from '@/assets/hero-bg.jpg';
 
 const Index = () => {
@@ -16,9 +17,9 @@ const Index = () => {
   return (
     <div className="min-h-screen bg-background">
       <Navbar />
-      <main>
+      <main className="relative">
         <Hero />
-        
+
         {/* Featured Products */}
         <section id="products" className="relative py-24 bg-background">
           <div className="absolute inset-0 bg-gradient-to-b from-transparent via-primary/5 to-transparent pointer-events-none" />
@@ -58,12 +59,12 @@ const Index = () => {
 
         {/* Configurator CTA */}
         <section className="relative py-24 overflow-hidden">
-          <div 
+          <div
             className="absolute inset-0 bg-cover bg-center opacity-20"
             style={{ backgroundImage: `url(${configuratorBg})` }}
           />
           <div className="absolute inset-0 bg-gradient-to-r from-background via-background/90 to-background" />
-          
+
           <div className="container relative z-10 mx-auto px-4">
             <div className="glass-card p-8 md:p-12 max-w-4xl mx-auto text-center neon-border">
               <div className="flex justify-center mb-6">
@@ -71,15 +72,15 @@ const Index = () => {
                   <Cpu className="h-8 w-8 text-primary" />
                 </div>
               </div>
-              
+
               <h2 className="font-display text-3xl md:text-4xl font-bold mb-4">
                 <span className="text-foreground">Arma tu </span>
                 <span className="gradient-text">PC Gamer</span>
               </h2>
-              
+
               <p className="text-lg text-muted-foreground mb-8 max-w-2xl mx-auto">
-                ¿No encuentras lo que buscas? Diseña tu propia configuración desde cero. 
-                Selecciona procesador, tarjeta gráfica, RAM y más. Te enviamos la cotización 
+                ¿No encuentras lo que buscas? Diseña tu propia configuración desde cero.
+                Selecciona procesador, tarjeta gráfica, RAM y más. Te enviamos la cotización
                 por WhatsApp en minutos.
               </p>
 
@@ -101,6 +102,8 @@ const Index = () => {
             </div>
           </div>
         </section>
+
+        <FAQ />
 
         <section id="trust">
           <TrustSection />

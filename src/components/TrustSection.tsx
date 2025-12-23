@@ -1,5 +1,6 @@
 import { Shield, Truck, Headphones, Award, Users, Star, Monitor } from 'lucide-react';
-import { stats, brands, testimonials } from '@/data/products';
+import { stats, testimonials } from '@/data/products';
+import { BrandsCarousel } from './BrandsCarousel';
 
 const benefits = [
   {
@@ -31,8 +32,11 @@ export function TrustSection() {
       <div className="absolute inset-0 bg-gradient-to-b from-transparent via-muted/30 to-transparent pointer-events-none" />
 
       <div className="container relative z-10 mx-auto px-4">
+        {/* Brands Carousel */}
+        <BrandsCarousel />
+        
         {/* Stats counters */}
-        <div className="mb-20 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+        <div className="mb-20 mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
           {[
             { value: stats.pcsSold, label: 'PCs Vendidas', icon: Monitor },
             { value: stats.happyCustomers, label: 'Clientes Satisfechos', icon: Users },
@@ -116,25 +120,6 @@ export function TrustSection() {
                     <p className="text-xs text-muted-foreground">Compró: {testimonial.product}</p>
                   </div>
                 </div>
-              </div>
-            ))}
-          </div>
-        </div>
-
-        {/* Brand logos */}
-        <div>
-          <p className="mb-6 text-center text-sm font-medium text-muted-foreground">
-            TRABAJAMOS CON LAS MEJORES MARCAS
-          </p>
-          <div className="flex flex-wrap items-center justify-center gap-8">
-            {brands.map((brand, index) => (
-              <div
-                key={index}
-                className="flex h-12 items-center px-4 opacity-50 grayscale transition-all hover:opacity-100 hover:grayscale-0"
-              >
-                <span className="font-display text-lg font-bold text-muted-foreground hover:text-primary transition-colors">
-                  {brand}
-                </span>
               </div>
             ))}
           </div>

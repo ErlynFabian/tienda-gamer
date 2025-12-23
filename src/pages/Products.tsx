@@ -95,22 +95,36 @@ export default function Products() {
     <div className="min-h-screen bg-background">
       <Navbar />
 
-      <main className="pt-20">
+      <main className="pt-16">
         {/* Hero */}
-        <section className="relative py-16 overflow-hidden">
+        <section className="relative pt-8 pb-16 overflow-hidden bg-gradient-to-b from-background to-muted/20">
+          <div className="absolute inset-0 overflow-hidden">
+            <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-primary/5 via-transparent to-transparent"></div>
+            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[1000px] h-[600px] bg-gradient-to-r from-primary/10 to-secondary/10 rounded-full blur-[100px] opacity-40"></div>
+          </div>
           <div className="absolute inset-0 bg-gradient-to-b from-primary/5 via-transparent to-transparent" />
           <div className="container relative z-10 mx-auto px-4 text-center">
-            <h1 className="font-display text-4xl md:text-5xl font-bold mb-4">
-              <span className="text-foreground">Nuestros </span>
-              <span className="gradient-text">Productos</span>
-            </h1>
-            <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-              PCs y laptops gaming de alto rendimiento. Todos con garantía, componentes originales y soporte por WhatsApp.
-            </p>
+            <div className="max-w-4xl mx-auto">
+              <div className="mb-8">
+                <span className="inline-block px-4 py-1.5 text-xs font-semibold text-primary bg-primary/10 rounded-full mb-4">
+                  Nuestros Productos
+                </span>
+                <h1 className="font-display text-4xl sm:text-5xl md:text-6xl font-bold mb-6 leading-tight">
+                  <span className="text-foreground">Explora Nuestro </span>
+                  <span className="gradient-text bg-clip-text text-transparent bg-gradient-to-r from-primary to-secondary">
+                    Catálogo
+                  </span>
+                </h1>
+                <p className="text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto leading-relaxed">
+                  Descubre nuestra selección de productos de alta calidad para gamers y entusiastas de la tecnología.
+                </p>
+              </div>
+            </div>
           </div>
+          <div className="absolute bottom-0 left-0 right-0 h-16 bg-gradient-to-t from-background to-transparent"></div>
         </section>
 
-        <div className="container mx-auto px-4 pb-20">
+        <div className="container mx-auto px-4 py-12">
           {/* Search and filters bar */}
           <div className="mb-8 space-y-4">
             {/* Search */}
