@@ -9,30 +9,27 @@ export function Navbar() {
   const { config, generateWhatsAppLink } = useStore();
 
   const navLinks = [
-    { label: 'Productos', href: '#products' },
-    { label: 'Arma tu PC', href: '#configurator' },
-    { label: 'Nosotros', href: '#trust' },
+    { label: 'Productos', href: '/productos' },
+    { label: 'Arma tu PC', href: '/arma-tu-pc' },
   ];
 
   return (
     <nav className="fixed top-0 left-0 right-0 z-50 border-b border-border/50 bg-background/80 backdrop-blur-xl">
       <div className="container mx-auto px-4">
         <div className="flex h-16 items-center justify-between">
-          {/* Logo */}
           <Link to="/" className="font-display text-xl font-bold gradient-text">
             {config.storeName}
           </Link>
 
-          {/* Desktop nav */}
           <div className="hidden items-center gap-8 md:flex">
             {navLinks.map((link) => (
-              <a
+              <Link
                 key={link.href}
-                href={link.href}
+                to={link.href}
                 className="text-sm font-medium text-muted-foreground transition-colors hover:text-primary"
               >
                 {link.label}
-              </a>
+              </Link>
             ))}
             <Link
               to="/admin"
@@ -52,7 +49,6 @@ export function Navbar() {
             </Button>
           </div>
 
-          {/* Mobile menu button */}
           <button
             onClick={() => setIsOpen(!isOpen)}
             className="rounded-lg p-2 text-foreground hover:bg-muted md:hidden"
@@ -61,19 +57,18 @@ export function Navbar() {
           </button>
         </div>
 
-        {/* Mobile nav */}
         {isOpen && (
           <div className="border-t border-border py-4 md:hidden">
             <div className="flex flex-col gap-4">
               {navLinks.map((link) => (
-                <a
+                <Link
                   key={link.href}
-                  href={link.href}
+                  to={link.href}
                   onClick={() => setIsOpen(false)}
                   className="text-sm font-medium text-muted-foreground transition-colors hover:text-primary"
                 >
                   {link.label}
-                </a>
+                </Link>
               ))}
               <Link
                 to="/admin"
