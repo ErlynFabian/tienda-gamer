@@ -1,23 +1,14 @@
 import { Link } from 'react-router-dom';
-import { MessageCircle, Flame, Zap, Eye } from 'lucide-react';
+import { Flame, Eye, ArrowRight } from 'lucide-react';
 import { Product } from '@/data/products';
-import { useStore } from '@/context/StoreContext';
 import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
 
 interface ProductCardProps {
   product: Product;
 }
 
 export function ProductCard({ product }: ProductCardProps) {
-  const { generateWhatsAppLink } = useStore();
-
-  const message = `Hola, quiero comprar:
-🖥️ ${product.name}
-${product.specs.map(s => `• ${s}`).join('\n')}
-💰 Precio: $${product.price.toLocaleString()}
-
-¿Está disponible?`;
-
   const discount = product.originalPrice
     ? Math.round(((product.originalPrice - product.price) / product.originalPrice) * 100)
     : 0;
@@ -87,15 +78,13 @@ ${product.specs.map(s => `• ${s}`).join('\n')}
           )}
         </div>
 
-        <a
-          href={generateWhatsAppLink(message)}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="flex w-full items-center justify-center gap-2 rounded-lg bg-whatsapp py-3 font-bold text-white transition-all duration-300 hover:scale-[1.02] hover:shadow-[0_0_20px_rgba(37,211,102,0.5)]"
-        >
-          <MessageCircle className="h-5 w-5" />
-          Comprar por WhatsApp
-        </a>
+        <Button asChild variant="neon" className="w-full">
+          <Link to={`/producto/${product.id}`}>
+            <Eye className="h-4 w-4 mr-2" />
+            Ver detalles
+            <ArrowRight className="h-4 w-4 ml-2" />
+          </Link>
+        </Button>
       </div>
     </div>
   );
