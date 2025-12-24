@@ -71,7 +71,7 @@ export function AdminLayout() {
                 <div className="mt-auto p-6 border-t border-border">
                     <button
                         onClick={handleLogout}
-                        className="flex items-center w-full px-4 py-2.5 text-sm font-medium text-red-600 hover:bg-red-50 rounded-lg transition-colors"
+                        className="flex items-center w-full px-4 py-2.5 text-sm font-medium text-red-400 hover:bg-red-500/10 rounded-lg transition-colors"
                     >
                         <ArrowLeft className="h-4 w-4 mr-3" />
                         Cerrar Sesión

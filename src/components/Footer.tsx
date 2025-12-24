@@ -87,7 +87,7 @@ export function Footer() {
           </div>
           <p>© {new Date().getFullYear()} {config.storeName}. Todos los derechos reservados.</p>
           <p className="mt-1">
-            Compra segura por WhatsApp • Garantía incluida • Envíos a todo RD
+            Asistente Virtual 24/7 • Garantía incluida • Envíos a todo RD
           </p>
         </div>
       </div>

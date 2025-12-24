@@ -5,7 +5,7 @@ import { products, Product } from '@/data/products';
 import { ProductCard } from '@/components/ProductCard';
 import { Navbar } from '@/components/Navbar';
 import { Footer } from '@/components/Footer';
-import { WhatsAppFloatingButton } from '@/components/WhatsAppButton';
+import { Chatbot } from '@/components/Chatbot';
 import { Button } from '@/components/ui/button';
 
 type Category = 'all' | 'pc' | 'laptop' | 'accessory';
@@ -239,7 +239,7 @@ export default function Products() {
       </main>
 
       <Footer />
-      <WhatsAppFloatingButton />
+      <Chatbot />
     </div>
   );
 }

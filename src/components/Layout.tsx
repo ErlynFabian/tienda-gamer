@@ -1,7 +1,7 @@
 import { ReactNode } from 'react';
 import { Navbar } from '@/components/Navbar';
 import { Footer } from '@/components/Footer';
-import { WhatsAppFloatingButton } from '@/components/WhatsAppButton';
+import { Chatbot } from '@/components/Chatbot';
 
 export function Layout({ children }: { children: ReactNode }) {
     return (
@@ -11,7 +11,7 @@ export function Layout({ children }: { children: ReactNode }) {
                 {children}
             </main>
             <Footer />
-            <WhatsAppFloatingButton />
+            <Chatbot />
         </div>
     );
 }

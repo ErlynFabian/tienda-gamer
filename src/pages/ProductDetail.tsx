@@ -25,7 +25,7 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Navbar } from '@/components/Navbar';
 import { Footer } from '@/components/Footer';
-import { WhatsAppFloatingButton } from '@/components/WhatsAppButton';
+import { Chatbot } from '@/components/Chatbot';
 import { ProductCard } from '@/components/ProductCard';
 import { formatPrice } from '@/lib/utils';
 
@@ -153,8 +153,8 @@ Me gustaría más información sobre este producto.`;
                       key={index}
                       onClick={() => setSelectedImage(index)}
                       className={`w-20 h-20 rounded-lg overflow-hidden border-2 transition-all ${selectedImage === index
-                          ? 'border-primary shadow-[0_0_15px_hsl(var(--primary)/0.3)]'
-                          : 'border-border hover:border-primary/50'
+                        ? 'border-primary shadow-[0_0_15px_hsl(var(--primary)/0.3)]'
+                        : 'border-border hover:border-primary/50'
                         }`}
                     >
                       <img src={img} alt="" className="w-full h-full object-cover" />
@@ -313,7 +313,7 @@ Me gustaría más información sobre este producto.`;
       </main>
 
       <Footer />
-      <WhatsAppFloatingButton />
+      <Chatbot />
     </div>
   );
 }

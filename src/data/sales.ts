@@ -11,7 +11,7 @@ export interface Sale {
   items: SaleItem[];
   total: number;
   date: Date;
-  status: 'completed' | 'pending' | 'shipped';
+  status: 'completed' | 'pending' | 'shipped' | 'cancelled';
 }
 
 // Datos de ejemplo de ventas
@@ -48,7 +48,7 @@ const generateMockSales = (): Sale[] => {
         total += price * quantity;
       }
 
-      const statuses: ('completed' | 'pending' | 'shipped')[] = ['completed', 'pending', 'shipped'];
+      const statuses: ('completed' | 'pending' | 'shipped' | 'cancelled')[] = ['completed', 'pending', 'shipped', 'cancelled'];
       const status = statuses[Math.floor(Math.random() * statuses.length)];
 
       sales.push({

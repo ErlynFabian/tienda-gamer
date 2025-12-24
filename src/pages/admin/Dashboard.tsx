@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import {
     Package,
     Tags,
@@ -8,11 +8,53 @@ import {
     ShoppingCart,
     Users,
 } from 'lucide-react';
-import { products } from '@/data/products';
+import { Product, products as initialProducts } from '@/data/products';
 import { salesData } from '@/data/sales';
 import { Button } from '@/components/ui/button';
+import { toast } from 'sonner';
+import {
+    Dialog,
+    DialogContent,
+    DialogHeader,
+    DialogTitle,
+    DialogDescription,
+    DialogFooter,
+} from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 
 export default function AdminDashboard() {
+    const [inventory, setInventory] = useState(initialProducts);
+    const [restockDialogOpen, setRestockDialogOpen] = useState(false);
+    const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
+    const [restockAmount, setRestockAmount] = useState("");
+
+    const openRestockDialog = (product: Product) => {
+        setSelectedProduct(product);
+        setRestockAmount("");
+        setRestockDialogOpen(true);
+    };
+
+    const confirmRestock = () => {
+        if (!selectedProduct || !restockAmount) return;
+        const amount = parseInt(restockAmount);
+
+        if (isNaN(amount) || amount <= 0) {
+            toast.error("Error", { description: "Por favor ingresa una cantidad válida" });
+            return;
+        }
+
+        setInventory(prev => prev.map(item =>
+            item.id === selectedProduct.id ? { ...item, stock: item.stock + amount } : item
+        ));
+
+        toast.success("Stock actualizado", {
+            description: `Se han añadido ${amount} unidades a ${selectedProduct.name}`
+        });
+
+        setRestockDialogOpen(false);
+    };
+
     return (
         <div className="space-y-6">
             {/* Tarjetas de Estadísticas */}
@@ -20,7 +62,7 @@ export default function AdminDashboard() {
                 {[
                     {
                         title: 'Productos Totales',
-                        value: products.length.toString(),
+                        value: inventory.length.toString(),
                         change: '+4 nuevos',
                         icon: Package,
                         iconBg: 'bg-primary/20',
@@ -147,7 +189,7 @@ export default function AdminDashboard() {
                     <div className="bg-card border border-border/50 rounded-xl p-6">
                         <h4 className="font-medium mb-4">Productos Populares</h4>
                         <div className="space-y-3">
-                            {products
+                            {inventory
                                 .filter(product => product.featured)
                                 .sort((a, b) => b.price - a.price)
                                 .slice(0, 5)
@@ -167,7 +209,7 @@ export default function AdminDashboard() {
                                         <span className="text-sm font-medium">${product.price.toLocaleString()}</span>
                                     </div>
                                 ))}
-                            {products.filter(p => p.featured).length === 0 && (
+                            {inventory.filter(p => p.featured).length === 0 && (
                                 <p className="text-sm text-muted-foreground text-center py-4">No hay productos populares</p>
                             )}
                         </div>
@@ -177,7 +219,7 @@ export default function AdminDashboard() {
                     <div className="bg-card border border-border/50 rounded-xl p-6">
                         <h4 className="font-medium mb-4">Stock Crítico</h4>
                         <div className="space-y-3">
-                            {products
+                            {inventory
                                 .filter(product => product.stock < 4)
                                 .sort((a, b) => a.stock - b.stock)
                                 .map((product) => (
@@ -205,9 +247,10 @@ export default function AdminDashboard() {
                                             <Button
                                                 variant="outline"
                                                 size="sm"
+                                                onClick={() => openRestockDialog(product)}
                                                 className={`h-8 px-3 text-xs ${product.stock === 0
-                                                    ? 'text-red-700 dark:text-red-400 border-red-300 dark:border-red-800 hover:bg-red-100 dark:hover:bg-red-900/30'
-                                                    : 'text-amber-700 dark:text-amber-400 border-amber-300 dark:border-amber-800 hover:bg-amber-100 dark:hover:bg-amber-900/30'
+                                                    ? 'text-red-700 dark:text-red-400 border-red-300 dark:border-red-800 hover:bg-red-500/10'
+                                                    : 'text-amber-700 dark:text-amber-400 border-amber-300 dark:border-amber-800 hover:bg-amber-500/10'
                                                     }`}
                                             >
                                                 Reponer
@@ -216,7 +259,7 @@ export default function AdminDashboard() {
                                     </div>
                                 ))}
 
-                            {products.filter(p => p.stock < 4).length === 0 && (
+                            {inventory.filter(p => p.stock < 4).length === 0 && (
                                 <div className="text-center py-8">
                                     <Package className="h-12 w-12 text-muted-foreground/20 mx-auto mb-2" />
                                     <p className="text-sm text-muted-foreground">Todo el stock está en buen nivel</p>
@@ -226,6 +269,42 @@ export default function AdminDashboard() {
                     </div>
                 </div>
             </div>
+
+            <Dialog open={restockDialogOpen} onOpenChange={setRestockDialogOpen}>
+                <DialogContent>
+                    <DialogHeader>
+                        <DialogTitle>Reponer Stock</DialogTitle>
+                        <DialogDescription>
+                            Añadir unidades al inventario de: {selectedProduct?.name}
+                        </DialogDescription>
+                    </DialogHeader>
+                    <div className="grid gap-4 py-4">
+                        <div className="grid grid-cols-4 items-center gap-4">
+                            <Label htmlFor="amount" className="text-right">
+                                Cantidad
+                            </Label>
+                            <Input
+                                id="amount"
+                                type="number"
+                                placeholder="Ej: 10"
+                                className="col-span-3"
+                                value={restockAmount}
+                                onChange={(e) => setRestockAmount(e.target.value)}
+                                onKeyDown={(e) => e.key === 'Enter' && confirmRestock()}
+                                autoFocus
+                            />
+                        </div>
+                    </div>
+                    <DialogFooter>
+                        <Button variant="outline" onClick={() => setRestockDialogOpen(false)}>
+                            Cancelar
+                        </Button>
+                        <Button onClick={confirmRestock}>
+                            Confirmar
+                        </Button>
+                    </DialogFooter>
+                </DialogContent>
+            </Dialog>
         </div>
     );
 }

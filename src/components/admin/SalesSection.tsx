@@ -12,7 +12,8 @@ import {
     Eye,
     Edit2,
     Trash2,
-    Calendar
+    Calendar,
+    CheckCircle2
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { salesData, type Sale } from '@/data/sales';
@@ -34,6 +35,17 @@ import {
     SelectTrigger,
     SelectValue,
 } from "@/components/ui/select";
+import {
+    AlertDialog,
+    AlertDialogAction,
+    AlertDialogCancel,
+    AlertDialogContent,
+    AlertDialogDescription,
+    AlertDialogFooter,
+    AlertDialogHeader,
+    AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
+import { toast } from 'sonner';
 
 // Helper to simulate profit (30% margin)
 const calculateProfit = (amount: number) => amount * 0.3;
@@ -51,6 +63,17 @@ export function SalesSection() {
     const [newSaleCustomer, setNewSaleCustomer] = useState('');
     const [newSaleProduct, setNewSaleProduct] = useState('');
     const [newSaleQuantity, setNewSaleQuantity] = useState(1);
+
+    // Action States
+    const [viewSale, setViewSale] = useState<Sale | null>(null);
+    const [isViewOpen, setIsViewOpen] = useState(false);
+
+    const [editSale, setEditSale] = useState<Sale | null>(null);
+    const [isEditOpen, setIsEditOpen] = useState(false);
+    const [newStatus, setNewStatus] = useState<string>('');
+
+    const [deleteSale, setDeleteSale] = useState<Sale | null>(null);
+    const [isDeleteOpen, setIsDeleteOpen] = useState(false);
 
     // Autocomplete states
     const [productSearch, setProductSearch] = useState('');
@@ -86,15 +109,11 @@ export function SalesSection() {
     const monthCardsData = useMemo(() => {
         const keys = Object.keys(salesByMonth);
 
-        // Sort keys to have current month first or by date? 
-        // keys depend on insertion order usually, but let's just reverse to show latest?
-        // Actually the mock generator sorts by date desc.
-
         return keys.map(monthName => {
             const data = salesByMonth[monthName];
             const completed = data.sales.filter(s => s.status === 'completed' || s.status === 'shipped').length;
             const pending = data.sales.filter(s => s.status === 'pending').length;
-            const cancelled = data.sales.filter(s => s.status === 'cancelled' as any).length;
+            const cancelled = data.sales.filter(s => s.status === 'cancelled').length;
 
             return {
                 id: monthName,
@@ -175,13 +194,49 @@ export function SalesSection() {
 
         setSales([newSale, ...sales]);
         setIsNewSaleOpen(false);
+        toast.success("Venta registrada exitosamente");
+    };
+
+    // Action Handlers
+    const handleView = (sale: Sale) => {
+        setViewSale(sale);
+        setIsViewOpen(true);
+    };
+
+    const handleEdit = (sale: Sale) => {
+        setEditSale(sale);
+        setNewStatus(sale.status);
+        setIsEditOpen(true);
+    };
+
+    const handleUpdateStatus = () => {
+        if (!editSale) return;
+
+        setSales(sales.map(s =>
+            s.id === editSale.id ? { ...s, status: newStatus as Sale['status'] } : s
+        ));
+
+        setIsEditOpen(false);
+        toast.success("Estado de venta actualizado");
+    };
+
+    const handleDelete = (sale: Sale) => {
+        setDeleteSale(sale);
+        setIsDeleteOpen(true);
+    };
+
+    const confirmDelete = () => {
+        if (!deleteSale) return;
+
+        setSales(sales.filter(s => s.id !== deleteSale.id));
+        setIsDeleteOpen(false);
+        toast.success("Venta eliminada correctamente");
     };
 
     if (!selectedMonth) {
         return (
             <div className="space-y-6 animate-in fade-in duration-500">
-                <div className="flex justify-between items-center">
-                    <h2 className="text-xl font-semibold">Resumen de Ventas</h2>
+                <div className="flex justify-end items-center">
                     <Button onClick={handleNewSale} className="bg-green-600 hover:bg-green-700">
                         <ShoppingCart className="h-4 w-4 mr-2" />
                         Registrar Venta
@@ -447,6 +502,9 @@ export function SalesSection() {
                                 } else if (sale.status === 'pending') {
                                     statusColor = 'bg-amber-100 text-amber-800 dark:bg-amber-900/30 dark:text-amber-400';
                                     statusLabel = 'Pendiente';
+                                } else if (sale.status === 'cancelled') {
+                                    statusColor = 'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400';
+                                    statusLabel = 'Cancelada';
                                 }
 
                                 return (
@@ -481,13 +539,28 @@ export function SalesSection() {
                                         </td>
                                         <td className="px-6 py-4 text-right">
                                             <div className="flex justify-end gap-2">
-                                                <Button variant="ghost" size="icon" className="h-8 w-8 text-muted-foreground hover:text-foreground">
+                                                <Button
+                                                    variant="ghost"
+                                                    size="icon"
+                                                    className="h-8 w-8 text-muted-foreground hover:text-foreground"
+                                                    onClick={() => handleView(sale)}
+                                                >
                                                     <Eye className="h-4 w-4" />
                                                 </Button>
-                                                <Button variant="ghost" size="icon" className="h-8 w-8 text-blue-500 hover:text-blue-600 hover:bg-blue-50">
+                                                <Button
+                                                    variant="ghost"
+                                                    size="icon"
+                                                    className="h-8 w-8 text-blue-500 hover:text-blue-600 hover:bg-blue-50"
+                                                    onClick={() => handleEdit(sale)}
+                                                >
                                                     <Edit2 className="h-4 w-4" />
                                                 </Button>
-                                                <Button variant="ghost" size="icon" className="h-8 w-8 text-red-500 hover:text-red-600 hover:bg-red-50">
+                                                <Button
+                                                    variant="ghost"
+                                                    size="icon"
+                                                    className="h-8 w-8 text-red-500 hover:text-red-600 hover:bg-red-50"
+                                                    onClick={() => handleDelete(sale)}
+                                                >
                                                     <Trash2 className="h-4 w-4" />
                                                 </Button>
                                             </div>
@@ -506,6 +579,102 @@ export function SalesSection() {
                     </table>
                 </div>
             </div>
+
+            {/* View Sale Dialog */}
+            <Dialog open={isViewOpen} onOpenChange={setIsViewOpen}>
+                <DialogContent>
+                    <DialogHeader>
+                        <DialogTitle>Detalle de Venta</DialogTitle>
+                        <DialogDescription>
+                            ID: {viewSale?.id} - {viewSale && new Date(viewSale.date).toLocaleDateString()}
+                        </DialogDescription>
+                    </DialogHeader>
+                    {viewSale && (
+                        <div className="space-y-4">
+                            <div className="flex justify-between items-center bg-muted/40 p-3 rounded-lg">
+                                <div>
+                                    <p className="text-sm font-medium text-muted-foreground">Cliente</p>
+                                    <p className="font-semibold">{viewSale.customer}</p>
+                                </div>
+                                <div className="text-right">
+                                    <p className="text-sm font-medium text-muted-foreground">Estado</p>
+                                    <p className={`font-semibold capitalize ${viewSale.status === 'completed' ? 'text-green-500' :
+                                        viewSale.status === 'pending' ? 'text-amber-500' : 'text-red-500'
+                                        }`}>
+                                        {viewSale.status === 'completed' ? 'Completada' :
+                                            viewSale.status === 'pending' ? 'Pendiente' :
+                                                viewSale.status === 'cancelled' ? 'Cancelada' : viewSale.status}
+                                    </p>
+                                </div>
+                            </div>
+
+                            <div>
+                                <h4 className="font-medium mb-2">Productos</h4>
+                                <div className="border border-border rounded-md divide-y divide-border">
+                                    {viewSale.items.map((item, idx) => (
+                                        <div key={idx} className="flex justify-between p-3 text-sm">
+                                            <span>{item.quantity}x {item.name}</span>
+                                            <span className="font-mono">${(item.price * item.quantity).toLocaleString()}</span>
+                                        </div>
+                                    ))}
+                                </div>
+                            </div>
+
+                            <div className="flex justify-between items-center pt-2 border-t text-lg font-bold">
+                                <span>Total</span>
+                                <span>${viewSale.total.toLocaleString()}</span>
+                            </div>
+                        </div>
+                    )}
+                </DialogContent>
+            </Dialog>
+
+            {/* Edit Sale Dialog */}
+            <Dialog open={isEditOpen} onOpenChange={setIsEditOpen}>
+                <DialogContent>
+                    <DialogHeader>
+                        <DialogTitle>Actualizar Estado</DialogTitle>
+                        <DialogDescription>
+                            Cambiar el estado de la venta {editSale?.id}
+                        </DialogDescription>
+                    </DialogHeader>
+                    <div className="py-4">
+                        <Label className="mb-2 block">Nuevo Estado</Label>
+                        <Select value={newStatus} onValueChange={setNewStatus}>
+                            <SelectTrigger>
+                                <SelectValue placeholder="Seleccionar estado" />
+                            </SelectTrigger>
+                            <SelectContent>
+                                <SelectItem value="completed">Completada</SelectItem>
+                                <SelectItem value="pending">Pendiente</SelectItem>
+                                <SelectItem value="cancelled">Cancelada</SelectItem>
+                            </SelectContent>
+                        </Select>
+                    </div>
+                    <DialogFooter>
+                        <Button variant="outline" onClick={() => setIsEditOpen(false)}>Cancelar</Button>
+                        <Button onClick={handleUpdateStatus}>Guardar Cambios</Button>
+                    </DialogFooter>
+                </DialogContent>
+            </Dialog>
+
+            {/* Delete Confirmation Alert */}
+            <AlertDialog open={isDeleteOpen} onOpenChange={setIsDeleteOpen}>
+                <AlertDialogContent>
+                    <AlertDialogHeader>
+                        <AlertDialogTitle>¿Está seguro de eliminar esta venta?</AlertDialogTitle>
+                        <AlertDialogDescription>
+                            Esta acción no se puede deshacer. La venta {deleteSale?.id} será eliminada permanentemente del registro.
+                        </AlertDialogDescription>
+                    </AlertDialogHeader>
+                    <AlertDialogFooter>
+                        <AlertDialogCancel>Cancelar</AlertDialogCancel>
+                        <AlertDialogAction onClick={confirmDelete} className="bg-red-600 hover:bg-red-700">
+                            Eliminar
+                        </AlertDialogAction>
+                    </AlertDialogFooter>
+                </AlertDialogContent>
+            </AlertDialog>
         </div>
     );
 }

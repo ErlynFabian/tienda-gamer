@@ -19,7 +19,7 @@ import { useStore } from '@/context/StoreContext';
 import { Button } from '@/components/ui/button';
 import { Navbar } from '@/components/Navbar';
 import { Footer } from '@/components/Footer';
-import { WhatsAppFloatingButton } from '@/components/WhatsAppButton';
+import { Chatbot } from '@/components/Chatbot';
 import { formatPrice } from '@/lib/utils';
 
 const componentCategories = [
@@ -343,7 +343,7 @@ ${configLines.join('\n')}
       </main>
 
       <Footer />
-      <WhatsAppFloatingButton />
+      <Chatbot />
     </div>
   );
 }

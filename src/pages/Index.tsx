@@ -5,7 +5,7 @@ import { Hero } from '@/components/Hero';
 import { ProductCard } from '@/components/ProductCard';
 import { TrustSection } from '@/components/TrustSection';
 import { Footer } from '@/components/Footer';
-import { WhatsAppFloatingButton } from '@/components/WhatsAppButton';
+import { Chatbot } from '@/components/Chatbot';
 import { Button } from '@/components/ui/button';
 import { products } from '@/data/products';
 import { FAQ } from '@/components/FAQ';
@@ -110,7 +110,7 @@ const Index = () => {
         </section>
       </main>
       <Footer />
-      <WhatsAppFloatingButton />
+      <Chatbot />
     </div>
   );
 };

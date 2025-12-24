@@ -16,7 +16,7 @@ const benefits = [
   {
     icon: Headphones,
     title: 'Soporte 24/7',
-    description: 'Atención personalizada por WhatsApp siempre disponible',
+    description: 'Asistente virtual disponible siempre para resolver tus dudas al instante',
   },
   {
     icon: Award,
@@ -34,30 +34,8 @@ export function TrustSection() {
       <div className="container relative z-10 mx-auto px-4">
         {/* Brands Carousel */}
         <BrandsCarousel />
-        
-        {/* Stats counters */}
-        <div className="mb-20 mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
-          {[
-            { value: stats.pcsSold, label: 'PCs Vendidas', icon: Monitor },
-            { value: stats.happyCustomers, label: 'Clientes Satisfechos', icon: Users },
-            { value: stats.yearsExperience, label: 'Años de Experiencia', suffix: '+', icon: Award },
-            { value: stats.rating, label: 'Calificación', suffix: '/5', icon: Star },
-          ].map((stat, index) => (
-            <div
-              key={index}
-              className="glass-card p-6 text-center hover-lift"
-            >
-              <stat.icon className="mx-auto mb-3 h-8 w-8 text-primary" />
-              <p className="font-display text-4xl font-bold text-foreground">
-                {typeof stat.value === 'number' && stat.value > 100
-                  ? stat.value.toLocaleString()
-                  : stat.value}
-                {stat.suffix}
-              </p>
-              <p className="mt-1 text-sm text-muted-foreground">{stat.label}</p>
-            </div>
-          ))}
-        </div>
+
+
 
         {/* Benefits */}
         <div className="mb-20">
@@ -65,7 +43,7 @@ export function TrustSection() {
             <span className="text-foreground">¿Por qué </span>
             <span className="gradient-text">elegirnos?</span>
           </h2>
-          
+
           <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
             {benefits.map((benefit, index) => (
               <div

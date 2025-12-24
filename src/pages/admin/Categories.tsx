@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { PlusCircle, Edit2, Trash2 } from 'lucide-react';
-import { products } from '@/data/products';
+
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import {
@@ -106,47 +106,7 @@ export default function AdminCategories() {
                 ))}
             </div>
 
-            <div className="bg-card border border-border/50 rounded-xl p-6 mt-6">
-                <div className="flex justify-between items-center mb-4">
-                    <h4 className="font-medium">Productos por categoría</h4>
-                    <span className="text-sm text-muted-foreground">Total: {products.length} productos</span>
-                </div>
-                <div className="h-64">
-                    <div className="h-full flex items-end gap-4 px-4">
-                        {['pc', 'laptop', 'accessory'].map((catId, i) => {
-                            const count = products.filter(p => p.category === catId).length || 1;
-                            const maxHeight = 180; // Altura máxima en píxeles
 
-                            // Calcular el total de productos para la categoría actual
-                            const categoryCounts = ['pc', 'laptop', 'accessory'].map(c =>
-                                products.filter(p => p.category === c).length || 1
-                            );
-                            const maxCount = Math.max(...categoryCounts) || 1;
-                            const height = (count / maxCount) * maxHeight;
-                            const labels: Record<string, string> = { pc: 'PC de Escritorio', laptop: 'Laptops', accessory: 'Accesorios' };
-
-                            return (
-                                <div key={i} className="flex-1 flex flex-col items-center">
-                                    <div className="text-center mb-2">
-                                        <div className="text-lg font-bold">{count}</div>
-                                        <div className="text-xs text-muted-foreground">
-                                            {products.length > 0 ? Math.round((count / products.length) * 100) : 0}%
-                                        </div>
-                                    </div>
-                                    <div
-                                        className="w-full bg-gradient-to-t from-primary to-primary/80 rounded-t-md hover:opacity-90 transition-opacity"
-                                        style={{
-                                            height: `${Math.max(20, height)}px`,
-                                            minHeight: '20px'
-                                        }}
-                                    />
-                                    <span className="text-xs mt-2 text-muted-foreground text-center">{labels[catId]}</span>
-                                </div>
-                            );
-                        })}
-                    </div>
-                </div>
-            </div>
 
             {/* Categories Dialogs */}
             <Dialog open={isCatDialogOpen} onOpenChange={setIsCatDialogOpen}>
