@@ -25,6 +25,15 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { ProductCard } from '@/components/ProductCard';
 import { formatPrice } from '@/lib/utils';
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+  DialogClose,
+} from "@/components/ui/dialog";
+import { ChevronLeft, X } from 'lucide-react';
 
 const specIcons: Record<string, React.ElementType> = {
   processor: Cpu,
@@ -58,6 +67,8 @@ export default function ProductDetail() {
   const { id } = useParams<{ id: string }>();
   const { generateWhatsAppLink } = useStore();
   const [selectedImage, setSelectedImage] = useState(0);
+  const [isLightboxOpen, setIsLightboxOpen] = useState(false);
+  const [lightboxIndex, setLightboxIndex] = useState(0);
 
   const product = products.find(p => p.id === id);
 
@@ -121,7 +132,13 @@ Me gustaría más información sobre este producto.`;
           {/* Image gallery */}
           <div className="space-y-4">
             {/* Main image */}
-            <div className="glass-card overflow-hidden aspect-square relative group">
+            <div
+              className="glass-card overflow-hidden aspect-square relative group cursor-zoom-in"
+              onClick={() => {
+                setLightboxIndex(selectedImage);
+                setIsLightboxOpen(true);
+              }}
+            >
               {product.badge && (
                 <Badge className="absolute left-4 top-4 z-10 bg-secondary text-secondary-foreground">
                   {product.badge}
@@ -137,6 +154,11 @@ Me gustaría más información sobre este producto.`;
                 alt={product.name}
                 className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
               />
+              <div className="absolute inset-0 bg-black/20 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                <div className="bg-background/80 backdrop-blur-sm p-3 rounded-full scale-90 group-hover:scale-100 transition-transform">
+                  <Monitor className="h-6 w-6 text-primary" />
+                </div>
+              </div>
             </div>
 
             {/* Thumbnails */}
@@ -304,6 +326,67 @@ Me gustaría más información sobre este producto.`;
           </div>
         </section>
       )}
+
+      {/* Lightbox Dialog */}
+      <Dialog open={isLightboxOpen} onOpenChange={setIsLightboxOpen}>
+        <DialogContent
+          className="max-w-[95vw] w-full h-[90vh] p-0 bg-transparent border-none flex flex-col items-center justify-center shadow-none"
+          hideClose
+        >
+          <DialogTitle className="sr-only">Galería de imágenes de {product.name}</DialogTitle>
+          <DialogDescription className="sr-only">Vista ampliada de las imágenes del producto</DialogDescription>
+
+          <div className="relative w-full h-full flex items-center justify-center p-4 md:p-12">
+            {/* Custom Large Close button */}
+            <DialogClose className="absolute top-4 right-4 z-[60] p-2 text-white hover:bg-white/10 rounded-full transition-colors flex items-center justify-center cursor-pointer">
+              <X className="h-10 w-10 md:h-12 md:w-12" />
+              <span className="sr-only">Cerrar</span>
+            </DialogClose>
+            {/* Navigation Arrows */}
+            {gallery.length > 1 && (
+              <>
+                <button
+                  onClick={() => setLightboxIndex((prev) => (prev === 0 ? gallery.length - 1 : prev - 1))}
+                  className="absolute left-4 z-50 p-3 text-white hover:bg-white/10 rounded-full transition-colors"
+                >
+                  <ChevronLeft className="h-10 w-10 text-primary" />
+                </button>
+                <button
+                  onClick={() => setLightboxIndex((prev) => (prev === gallery.length - 1 ? 0 : prev + 1))}
+                  className="absolute right-4 z-50 p-3 text-white hover:bg-white/10 rounded-full transition-colors"
+                >
+                  <ChevronRight className="h-10 w-10 text-primary" />
+                </button>
+              </>
+            )}
+
+            {/* Large Image */}
+            <img
+              src={gallery[lightboxIndex]}
+              alt={product.name}
+              className="max-w-full max-h-full object-contain select-none drop-shadow-2xl"
+            />
+
+            {/* Thumbnails at the bottom */}
+            {gallery.length > 1 && (
+              <div className="absolute bottom-10 left-1/2 -translate-x-1/2 flex gap-3 px-4 py-2 bg-black/40 backdrop-blur-md rounded-xl overflow-x-auto max-w-[90%] border border-white/10">
+                {gallery.map((img, index) => (
+                  <button
+                    key={index}
+                    onClick={() => setLightboxIndex(index)}
+                    className={`w-14 h-14 md:w-20 md:h-20 shrink-0 rounded-lg overflow-hidden border-2 transition-all ${lightboxIndex === index
+                      ? 'border-primary'
+                      : 'border-transparent opacity-50 hover:opacity-100'
+                      }`}
+                  >
+                    <img src={img} alt="" className="w-full h-full object-cover" />
+                  </button>
+                ))}
+              </div>
+            )}
+          </div>
+        </DialogContent>
+      </Dialog>
     </main>
   );
 }

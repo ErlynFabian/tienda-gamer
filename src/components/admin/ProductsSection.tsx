@@ -1,15 +1,5 @@
 import React, { useState } from 'react';
-import {
-    Plus,
-    Search,
-    Filter,
-    MoreVertical,
-    Edit2,
-    Trash2,
-    Eye,
-    Package,
-    Image as ImageIcon
-} from 'lucide-react';
+import { Plus, Search, Filter, MoreVertical, Edit2, Trash2, Eye, Package, Image as ImageIcon, X, Upload } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -79,6 +69,7 @@ export function ProductsSection() {
         offer: 0,
         isOffer: false
     });
+    const [viewedImage, setViewedImage] = useState<string>('');
 
     // Filter products
     const filteredProducts = products.filter(product => {
@@ -133,6 +124,7 @@ export function ProductsSection() {
 
     const openViewProduct = (product: Product) => {
         setCurrentProduct(product);
+        setViewedImage(product.image);
         setIsViewOpen(true);
     };
 
@@ -155,9 +147,21 @@ export function ProductsSection() {
             fullSpecs: Object.keys(fullSpecsData).length > 0 ? fullSpecsData : undefined
         };
 
+        const currentImages = formData.image && formData.image !== '/placeholder.svg'
+            ? [formData.image, ...(formData.gallery || [])]
+            : (formData.gallery || []);
+
+        const finalMainImage = currentImages[0] || '/placeholder.svg';
+        const finalGallery = currentImages.slice(1);
+
         if (currentProduct) {
             // Edit existing
-            setProducts(products.map(p => p.id === currentProduct.id ? { ...p, ...productData } as Product : p));
+            setProducts(products.map(p => p.id === currentProduct.id ? {
+                ...p,
+                ...productData,
+                image: finalMainImage,
+                gallery: finalGallery.length > 0 ? finalGallery : undefined
+            } as Product : p));
         } else {
             // Create new
             const newProduct: Product = {
@@ -169,7 +173,8 @@ export function ProductsSection() {
                 costPrice: Number(productData.costPrice) || 0,
                 stock: Number(productData.stock) || 0,
                 badge: productData.badge || undefined,
-                image: productData.image || 'https://images.unsplash.com/photo-1550009158-9ebf69173e03?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=60',
+                image: finalMainImage,
+                gallery: finalGallery.length > 0 ? finalGallery : undefined,
                 description: productData.description || '',
                 specs: productData.specs || [],
                 fullSpecs: productData.fullSpecs
@@ -190,6 +195,46 @@ export function ProductsSection() {
         setFullSpecsData(prev => ({
             ...prev,
             [key]: value
+        }));
+    };
+
+    const handleImageChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+        const files = Array.from(e.target.files || []);
+        if (files.length === 0) return;
+
+        const currentImages = formData.image && formData.image !== '/placeholder.svg'
+            ? [formData.image, ...(formData.gallery || [])]
+            : (formData.gallery || []);
+
+        const remainingSlots = 3 - currentImages.length;
+        const filesToProcess = files.slice(0, remainingSlots);
+
+        const newBase64Images = await Promise.all(
+            filesToProcess.map(file => new Promise<string>((resolve) => {
+                const reader = new FileReader();
+                reader.onloadend = () => resolve(reader.result as string);
+                reader.readAsDataURL(file);
+            }))
+        );
+
+        const updatedImages = [...currentImages, ...newBase64Images];
+        setFormData(prev => ({
+            ...prev,
+            image: updatedImages[0] || '/placeholder.svg',
+            gallery: updatedImages.slice(1)
+        }));
+    };
+
+    const removeImage = (index: number) => {
+        const currentImages = formData.image && formData.image !== '/placeholder.svg'
+            ? [formData.image, ...(formData.gallery || [])]
+            : (formData.gallery || []);
+
+        const updatedImages = currentImages.filter((_, i) => i !== index);
+        setFormData(prev => ({
+            ...prev,
+            image: updatedImages[0] || '/placeholder.svg',
+            gallery: updatedImages.slice(1)
         }));
     };
 
@@ -435,13 +480,69 @@ export function ProductsSection() {
                                             onChange={(e) => setFormData({ ...formData, stock: Number(e.target.value) })}
                                         />
                                     </div>
-                                    <div>
-                                        <Label htmlFor="image">URL de Imagen</Label>
-                                        <Input
-                                            id="image"
-                                            value={formData.image || ''}
-                                            onChange={(e) => setFormData({ ...formData, image: e.target.value })}
+                                    <div className="col-span-2">
+                                        <Label className="flex justify-between items-center mb-2">
+                                            <span>Imágenes del Producto (Máx. 3)</span>
+                                            <span className="text-xs text-muted-foreground">
+                                                {((formData.image !== '/placeholder.svg' ? 1 : 0) + (formData.gallery?.length || 0))} de 3
+                                            </span>
+                                        </Label>
+                                        <div className="grid grid-cols-3 gap-4">
+                                            {/* Render existing images */}
+                                            {[formData.image, ...(formData.gallery || [])]
+                                                .filter(img => img && img !== '/placeholder.svg')
+                                                .map((img, idx) => (
+                                                    <div key={idx} className="relative aspect-square rounded-lg overflow-hidden border bg-muted group">
+                                                        <img
+                                                            src={img}
+                                                            alt={`Preview ${idx + 1}`}
+                                                            className="w-full h-full object-cover"
+                                                        />
+                                                        <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                                                            <Button
+                                                                type="button"
+                                                                variant="destructive"
+                                                                size="icon"
+                                                                onClick={() => removeImage(idx)}
+                                                                className="h-8 w-8"
+                                                            >
+                                                                <X className="h-4 w-4" />
+                                                            </Button>
+                                                        </div>
+                                                        {idx === 0 && (
+                                                            <span className="absolute bottom-1 left-1 bg-primary/80 backdrop-blur-sm text-[10px] text-primary-foreground px-1.5 py-0.5 rounded leading-none">
+                                                                Principal
+                                                            </span>
+                                                        )}
+                                                    </div>
+                                                ))}
+
+                                            {/* Render upload slots if less than 3 images */}
+                                            {((formData.image !== '/placeholder.svg' ? 1 : 0) + (formData.gallery?.length || 0)) < 3 && (
+                                                <Label
+                                                    htmlFor="image-upload"
+                                                    className="aspect-square rounded-lg border-2 border-dashed border-border hover:border-primary/50 hover:bg-muted/50 transition-all cursor-pointer flex flex-col items-center justify-center gap-1.5"
+                                                >
+                                                    <div className="p-2 rounded-full bg-primary/10">
+                                                        <Upload className="h-4 w-4 text-primary" />
+                                                    </div>
+                                                    <div className="text-center px-1">
+                                                        <p className="text-[10px] font-medium leading-tight">Subir imagen</p>
+                                                    </div>
+                                                </Label>
+                                            )}
+                                        </div>
+                                        <input
+                                            id="image-upload"
+                                            type="file"
+                                            accept="image/*"
+                                            multiple
+                                            className="hidden"
+                                            onChange={handleImageChange}
                                         />
+                                        <p className="text-[11px] text-muted-foreground mt-2">
+                                            La primera imagen será la portada del producto.
+                                        </p>
                                     </div>
                                     <div className="col-span-2">
                                         <Label htmlFor="description">Descripción</Label>
@@ -506,17 +607,34 @@ export function ProductsSection() {
                     </DialogHeader>
                     {currentProduct && (
                         <div className="grid gap-6 py-4">
-                            <div className="aspect-video relative rounded-lg overflow-hidden bg-muted">
-                                {currentProduct.badge && (
-                                    <div className="absolute top-2 left-2 bg-primary text-primary-foreground text-xs px-2 py-1 rounded">
-                                        {currentProduct.badge}
+                            <div className="space-y-4">
+                                <div className="aspect-video relative rounded-lg overflow-hidden bg-muted border">
+                                    {currentProduct.badge && (
+                                        <div className="absolute top-2 left-2 bg-primary text-primary-foreground text-xs px-2 py-1 rounded z-10">
+                                            {currentProduct.badge}
+                                        </div>
+                                    )}
+                                    <img
+                                        src={viewedImage || currentProduct.image}
+                                        alt={currentProduct.name}
+                                        className="object-contain w-full h-full"
+                                    />
+                                </div>
+
+                                {currentProduct.gallery && currentProduct.gallery.length > 0 && (
+                                    <div className="grid grid-cols-5 gap-2">
+                                        {[currentProduct.image, ...currentProduct.gallery].map((img, idx) => (
+                                            <button
+                                                key={idx}
+                                                onClick={() => setViewedImage(img)}
+                                                className={`aspect-square rounded-md overflow-hidden border-2 transition-all ${viewedImage === img ? 'border-primary ring-2 ring-primary/20' : 'border-transparent hover:border-primary/50'
+                                                    }`}
+                                            >
+                                                <img src={img} alt="" className="w-full h-full object-cover" />
+                                            </button>
+                                        ))}
                                     </div>
                                 )}
-                                <img
-                                    src={currentProduct.image}
-                                    alt={currentProduct.name}
-                                    className="object-cover w-full h-full"
-                                />
                             </div>
                             <div className="grid grid-cols-2 gap-4">
                                 <div>
