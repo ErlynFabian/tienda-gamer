@@ -16,6 +16,7 @@ import TerminosCondiciones from "./pages/TerminosCondiciones";
 import Login from "./pages/Login";
 import { ProtectedRoute } from "./components/ProtectedRoute";
 import ScrollToTop from "./components/ScrollToTop";
+import { Layout } from "./components/Layout";
 
 import { AdminLayout } from "@/layouts/AdminLayout";
 import AdminDashboard from "@/pages/admin/Dashboard";
@@ -37,10 +38,18 @@ const App = () => (
         <BrowserRouter>
           <ScrollToTop />
           <Routes>
-            <Route path="/" element={<Index />} />
-            <Route path="/productos" element={<Products />} />
-            <Route path="/producto/:id" element={<ProductDetail />} />
-            <Route path="/arma-tu-pc" element={<Configurator />} />
+            <Route element={<Layout />}>
+              <Route path="/" element={<Index />} />
+              <Route path="/productos" element={<Products />} />
+              <Route path="/producto/:id" element={<ProductDetail />} />
+              <Route path="/arma-tu-pc" element={<Configurator />} />
+              <Route path="/sobre-nosotros" element={<SobreNosotros />} />
+              <Route path="/garantia" element={<Garantia />} />
+              <Route path="/politica-privacidad" element={<PoliticaPrivacidad />} />
+              <Route path="/terminos-condiciones" element={<TerminosCondiciones />} />
+              <Route path="*" element={<NotFound />} />
+            </Route>
+
             <Route path="/login" element={<Login />} />
 
             <Route element={<ProtectedRoute />}>
@@ -55,12 +64,7 @@ const App = () => (
               </Route>
             </Route>
 
-            <Route path="/sobre-nosotros" element={<SobreNosotros />} />
-            <Route path="/garantia" element={<Garantia />} />
-            <Route path="/politica-privacidad" element={<PoliticaPrivacidad />} />
-            <Route path="/terminos-condiciones" element={<TerminosCondiciones />} />
             <Route path="/" element={<Navigate to="/" replace />} />
-            <Route path="*" element={<NotFound />} />
           </Routes>
         </BrowserRouter>
       </TooltipProvider>
